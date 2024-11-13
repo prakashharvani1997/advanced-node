@@ -39,7 +39,7 @@ mongoose.Query.prototype.exec = async function() {
 
   const res = await exec.apply(this, arguments);
 
-  client.set(key, JSON.stringify(res));
+  client.set(key, JSON.stringify(res),'EX',10); // Expiration in 10 sec
 
   return res;
 };
