@@ -9,7 +9,7 @@ client.get = util.promisify(client.get);
 
 const exec = mongoose.Query.prototype.exec;
 
-mongoose.Query.prototype.exec = async function(options={}) {
+mongoose.Query.prototype.cache = async function(options={}) {
 
   this.hashKey = options.hashKey ? options.hashKey: ''
 

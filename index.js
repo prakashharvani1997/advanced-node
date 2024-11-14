@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cookieSession = require('cookie-session');
-const cors = require('cors');
+// const cors = require('cors');
 const passport = require('passport');
 require('dotenv').config();
 const bodyParser = require('body-parser');
@@ -20,7 +20,7 @@ mongoose.connect(keys.mongoURI, {
 });
 
 const app = express();
-app.use(cors());
+// app.use(cors());
 app.use(bodyParser.json());
 app.use(
   cookieSession({
@@ -43,7 +43,7 @@ if (['production'].includes(process.env.NODE_ENV)) {
   });
 }
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`Listening on port`, PORT);
 });
