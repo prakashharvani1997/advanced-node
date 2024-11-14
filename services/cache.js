@@ -9,7 +9,10 @@ client.get = util.promisify(client.get);
 
 const exec = mongoose.Query.prototype.exec;
 
-mongoose.Query.prototype.exec = async function() {
+mongoose.Query.prototype.exec = async function(options={}) {
+
+  this.hashKey = options.hashKey ? options.hashKey: ''
+
   this.useCache = true; // togglable Cache
 };
 
@@ -26,7 +29,7 @@ mongoose.Query.prototype.exec = async function() {
     })
   );
 
-  const cacheValue = await client.get(key);
+  const cacheValue = await client.hget(this.hashKey,key);
   if (cacheValue) {
     console.log("-----from rediss");
     const doc = JSON.parse(cacheValue);
@@ -39,7 +42,16 @@ mongoose.Query.prototype.exec = async function() {
 
   const res = await exec.apply(this, arguments);
 
-  client.set(key, JSON.stringify(res),'EX',10); // Expiration in 10 sec
+  // client.set(key, JSON.stringify(res),'EX',10); // Expiration in 10 sec
+  client.hset(this.hashKey,key, JSON.stringify(res)); // set nested Objects in redis cache
 
+  
   return res;
 };
+
+
+module.exports = {
+   clearHash(key){ // clear nested hash when creating new Record
+      client.del(key)
+  }
+}
